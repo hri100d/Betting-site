@@ -10,7 +10,6 @@
 
         <div class="row">
             <div class="col">
-                <!-- Date Selector Form -->
                 <form method="get" action="{{ url_for('views.competition_details', id=competition.id) }}">
                     <input type="date" name="date" value="{{ date }}" onchange="this.form.submit()">
                 </form>

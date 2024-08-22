@@ -2,7 +2,6 @@ from datetime import datetime
 import os
 from flask import Blueprint, current_app, flash, redirect, render_template, request, url_for
 from flask_login import login_required, current_user
-import requests
 from sqlalchemy import Transaction
 from website.fd_interface import get_match_head2head_by_id, get_standings_by_competition, get_team_by_id, get_topscorers_by_competition
 from website.setup_db import db

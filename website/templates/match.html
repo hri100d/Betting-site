@@ -7,7 +7,6 @@
             <span>{{ match.utc_date }}</span>
             <div class="row">
                 
-                <!-- Centered Teams Section -->
                 <div class="col d-flex justify-content-center align-items-center m-3">
                     {% for team in match.teams %}
                         <a href="{{ url_for('views.team_details', id=team.id) }}" class="team-btn" style="text-decoration: none; color: black; margin: 0 10px;">
@@ -19,7 +18,6 @@
                     {% endfor %}
                 </div>
                 
-                <!-- Existing Content Below -->
                 <div class="col-12 mt-3">
                     {% if match.status == 'FINISHED' %}
                         <div class="text-center">
@@ -83,7 +81,6 @@
         {% if match.status == 'FINISHED' %}
             <p><strong>Score:</strong> {{ match.full_time_home }} - {{ match.full_time_away }}</p>
         {% endif %}
-        <!-- Aggregates Information -->
         <div class="row mb-4">
             <div class="col-12">
                 <h2>Aggregates Information</h2>
@@ -110,7 +107,6 @@
             </div>
         </div>
 
-        <!-- Matches Information -->
         <div class="row">
             <div class="col-12">
                 <h2>Last Matches</h2>
@@ -137,7 +133,6 @@
             </div>
         </div>
 
-        <!-- Standings Information -->
         <div class="row mt-4">
             <div class="col">
                 <div class="border p-3">

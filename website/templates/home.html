@@ -75,24 +75,24 @@
                                             <form method="post" action="{{ url_for('views.place_bet') }}" style="display: flex; flex-direction: column; justify-content: center; margin: 0px 10px;">
                                                 <span>home</span>
                                                 <input type="hidden" name="winner" value="HOME_TEAM">
-                                                <input type="hidden" name="areas" value="{{ areas }}">  <!-- Hidden input to preserve areas -->
-                                                <input type="hidden" name="date" value="{{ date }}">    <!-- Hidden input to preserve date -->
+                                                <input type="hidden" name="areas" value="{{ areas }}">  
+                                                <input type="hidden" name="date" value="{{ date }}">     
                                                 <input type="hidden" name="match_id" value="{{ match.id }}">
                                                 <button type="submit" name="odd" value="{{ match.home_win_odd }}" class="btn btn-outline-secondary">{{ match.home_win_odd }}</button>
                                             </form>
                                             <form method="post" action="{{ url_for('views.place_bet') }}" style="display: flex; flex-direction: column; justify-content: center; margin: 0px 10px;">
                                                 <span>draw</span>
                                                 <input type="hidden" name="winner" value="DRAW">
-                                                <input type="hidden" name="areas" value="{{ areas }}">  <!-- Hidden input to preserve areas -->
-                                                <input type="hidden" name="date" value="{{ date }}">    <!-- Hidden input to preserve date -->
+                                                <input type="hidden" name="areas" value="{{ areas }}"> 
+                                                <input type="hidden" name="date" value="{{ date }}">    
                                                 <input type="hidden" name="match_id" value="{{ match.id }}">
                                                 <button type="submit" name="odd" value="{{ match.draw_odd }}" class="btn btn-outline-secondary">{{ match.draw_odd }}</button>
                                             </form>
                                             <form method="post" action="{{ url_for('views.place_bet') }}" style="display: flex; flex-direction: column; justify-content: center; margin: 0px 10px;">
                                                 <span>away</span>
                                                 <input type="hidden" name="winner" value="AWAY_TEAM">
-                                                <input type="hidden" name="areas" value="{{ areas }}">  <!-- Hidden input to preserve areas -->
-                                                <input type="hidden" name="date" value="{{ date }}">    <!-- Hidden input to preserve date -->
+                                                <input type="hidden" name="areas" value="{{ areas }}">  
+                                                <input type="hidden" name="date" value="{{ date }}">    
                                                 <input type="hidden" name="match_id" value="{{ match.id }}">
                                                 <button type="submit" name="odd" value="{{ match.away_win_odd }}" class="btn btn-outline-secondary">{{ match.away_win_odd }}</button>
                                             </form>
