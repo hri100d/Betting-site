@@ -1,0 +1,55 @@
+{% extends "base.html" %} {% block title %}Sign Up{% endblock %}
+
+{% block content %}
+<form method="POST">
+    <br />
+    <h3 align="center">Sign Up</h3>
+    <br />
+    <div class="form-group">
+      <div class="row g-3 align-items-center">
+        <div class="col-auto">
+          <label for="inputEmail" class="col-form-label">Email</label>
+        </div>
+        <div class="col-auto">
+          <input type="email" name="email" id="inputEmail1" class="form-control">
+        </div>
+        <div class="col-auto">
+          <span id="emailHelpInline" class="form-text">
+            example@gmail.com
+          </span>
+        </div>
+      </div>
+      <br />
+      <div class="row g-3 align-items-center">
+        <div class="col-auto">
+          <label for="inputPassword1" class="col-form-label">Password</label>
+        </div>
+        <div class="col-auto">
+          <input type="password" name="password1" id="inputPassword1" class="form-control">
+        </div>
+        <div class="col-auto">
+          <span id="passwordHelpInline" class="form-text">
+            Must be 8-20 characters long.
+          </span>
+        </div>
+      </div>
+      <br />
+      <div class="row g-3 align-items-center">
+        <div class="col-auto">
+          <label for="inputPassword2" class="col-form-label">Confirm Password</label>
+        </div>
+        <div class="col-auto">
+          <input type="password" name="password2" id="inputPassword2" class="form-control">
+        </div>
+        <div class="col-auto">
+          <span id="passwordHelpInline" class="form-text">
+            Confirm passowrd
+          </span>
+        </div>
+      </div>
+    </div>
+    <br />
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}My Bets{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h3>My Bets</h3>
+        {% if bets %}
+            <div class="list-group">
+                {% for bet in bets|reverse %}
+                    {% if bet.status == "FINISHED" %}
+                        {% if bet.user_won %}
+                            <!-- Display bet details if user won -->
+                            <div class="list-group-item my-3">
+                                <h5>Bet ID: {{ bet.id }}</h5>
+                                <p>Status: {{ bet.status }}</p>
+                                <p>Placed Amount: ${{ bet.money_placed | round(2) }}</p>
+                                <p>Odd: {{ bet.odd | round(2) }}</p>
+                                <h6>Matches:</h6>
+                                <ul>
+                                    {% for bet_match in bet.bet_matches %}
+                                        <li>{{ bet_match.home_team }} vs {{ bet_match.away_team }} - Predicted Winner: {{ bet_match.winner }} - Odd: {{ bet_match.odd | round(2) }} - Winner of Match: {{ bet_match.match.winner }}</li>
+                                    {% endfor %}
+                                </ul>
+                                <h5>Amount you won: ${{ bet.win_amount | round(2) }}</h5>
+                            </div>
+                        {% else %}
+                            <!-- Display bet details if user did not win -->
+                            <div class="list-group-item my-3">
+                                <h5>Bet ID: {{ bet.id }}</h5>
+                                <p>Status: {{ bet.status }}</p>
+                                <p>Placed Amount: ${{ bet.money_placed | round(2) }}</p>
+                                <p>Odd: {{ bet.odd | round(2) }}</p>
+                                <h6>Matches:</h6>
+                                <ul>
+                                    {% for bet_match in bet.bet_matches %}
+                                        <li>{{ bet_match.home_team }} vs {{ bet_match.away_team }} - Predicted Winner: {{ bet_match.winner }} - Odd: {{ bet_match.odd | round(2) }} - Winner of Match: {{ bet_match.match.winner }}</li>
+                                    {% endfor %}
+                                </ul>
+                                <h5>Next time</h5>
+                            </div>
+                        {% endif %}
+                    {% else %}
+                        <!-- Display bet details if status is not FINISHED -->
+                        <div class="list-group-item my-3">
+                            <h5>Bet ID: {{ bet.id }}</h5>
+                            <p>Status: {{ bet.status }}</p>
+                            <p>Placed Amount: ${{ bet.money_placed | round(2) }}</p>
+                            <p>Odd: {{ bet.odd | round(2) }}</p>
+                            <p>Potential Win Amount: ${{ bet.win_amount | round(2) }}</p>
+                            <h6>Matches:</h6>
+                            <ul>
+                                {% for bet_match in bet.bet_matches %}
+                                    <li>{{ bet_match.home_team }} vs {{ bet_match.away_team }} - Predicted Winner: {{ bet_match.winner }} - Odd: {{ bet_match.odd | round(2) }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No bets found.</p>
+        {% endif %}
+    </div>
+{% endblock %}

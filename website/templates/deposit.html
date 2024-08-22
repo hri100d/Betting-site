@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Deposit{% endblock %}
+
+{% block content %}
+  <div class="container mt-4">
+    <h1 class="display-4">Deposit</h1>
+    <p class="lead">Add funds to your account.</p>
+    <form method="post" action="{{ url_for('views.deposit') }}">
+      <div class="form-group">
+        <label for="amount">Deposit Amount</label>
+        <input type="number" class="form-control" id="amount" name="amount" required min="10">
+      </div>
+      <button type="submit" class="btn btn-primary">Deposit</button>
+    </form>
+  </div>
+{% endblock %}

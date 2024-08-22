@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-3 ml-5" align="left">
+            <h4>Select a Competition</h4>
+            <div id="competitions">
+                {% for area in areas %}
+                    {% for competition in area.competitions %}
+                        <div class="p-2" style="border: 2px solid black;">
+                            <a href="{{ url_for('views.competition_details', id=competition.id) }}" class="competition-btn" style="text-decoration: none; color: black;">
+                                <img src="{{ competition.emblem }}" alt="{{ competition.name }} emblem" style="width: 40px; height: 40px; margin-right: 10px;">
+                                {{ competition.name }}
+                            </a>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-5">
+            <h3>Matches</h3>
+            <form method="get" action="">
+                <input type="date" name="date" value="{{ date }}" onchange="this.form.submit()">
+            </form>
+            <div id="matches" align="center">
+                {% for area in areas %}
+                    {% for competition in area.competitions %}
+                    {% if competition.matches %}
+                        <div class="border border-secondary-subtle p-2 my-2" style="background-color: #c1c2d1a8;">
+                            <div class="row m-2">
+                                <img src="{{ competition.emblem }}" alt="{{ competition.name }} emblem" style="width: 45px; height: 45px;">
+                                {{ competition.name }}
+                            </div>
+                            {% for match in competition.matches %}
+                                {% set match_date = match.utc_date.split('T')[0] %}
+                                {% if match_date == date %}
+                                    <div class="col border border-secondary-subtle p-2 my-1" style="background-color: #a3bcfa6b;">
+                                        <a href="{{ url_for('views.match_details', competition_id=competition.id, match_id=match.id) }}" class="match-btn" style="text-decoration: none; color: black;">
+                                        <span>{{ match.utc_date }}</span>
+                                        <div class="row">
+                                            {% for team in match.teams %}
+                                                <div class="col">
+                                                    <img src="{{ team.crest }}" alt="{{ team.tla }}" style="width: 15px; height: 15px;">
+                                                    <h6>{{ team.short_name }}</h6>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                        </a>
+                                    
+                                        {% if match.status == 'FINISHED' %}
+                                            <span>{{ match.full_time_home }} - {{ match.full_time_away }}</span>
+                                            <div class="row" style="display: flex; justify-content: center;">
+                                                <form method="post" action="{{ url_for('views.place_bet') }}" style="display: flex; flex-direction: column; justify-content: center; margin: 0px 10px;">
+                                                    <span>home</span>
+                                                    <input type="hidden" name="winner" value="HOME">
+                                                    <input type="hidden" name="match_id" value="{{ match.id }}">
+                                                    <button type="submit" name="odd" value="{{ match.home_win_odd }}" class="{% if match.winner == 'HOME_TEAM' %}btn btn-success{% else %}btn btn-outline-secondary{% endif %}" disabled>{{ match.home_win_odd }}</button>
+                                                </form>
+                                                <form method="post" action="{{ url_for('views.place_bet') }}" style="display: flex; flex-direction: column; justify-content: center; margin: 0px 10px;">
+                                                    <span>draw</span>
+                                                    <input type="hidden" name="winner" value="DRAW">
+                                                    <input type="hidden" name="match_id" value="{{ match.id }}">
+                                                    <button type="submit" name="odd" value="{{ match.draw_odd }}" class="{% if match.winner == 'DRAW' %}btn btn-success{% else %}btn btn-outline-secondary{% endif %}" disabled>{{ match.draw_odd }}</button>
+                                                </form>
+                                                <form method="post" action="{{ url_for('views.place_bet') }}" style="display: flex; flex-direction: column; justify-content: center; margin: 0px 10px;">
+                                                    <span>away</span>
+                                                    <input type="hidden" name="winner" value="AWAY">
+                                                    <input type="hidden" name="match_id" value="{{ match.id }}">
+                                                    <button type="submit" name="odd" value="{{ match.away_win_odd }}" class="{% if match.winner == 'AWAY_TEAM' %}btn btn-success{% else %}btn btn-outline-secondary{% endif %}" disabled>{{ match.away_win_odd }}</button>
+                                                </form>
+                                            </div>
+                                        {% else %}
+                                        <div class="row" style="display: flex; justify-content: center;">
+                                            <form method="post" action="{{ url_for('views.place_bet') }}" style="display: flex; flex-direction: column; justify-content: center; margin: 0px 10px;">
+                                                <span>home</span>
+                                                <input type="hidden" name="winner" value="HOME_TEAM">
+                                                <input type="hidden" name="areas" value="{{ areas }}">  <!-- Hidden input to preserve areas -->
+                                                <input type="hidden" name="date" value="{{ date }}">    <!-- Hidden input to preserve date -->
+                                                <input type="hidden" name="match_id" value="{{ match.id }}">
+                                                <button type="submit" name="odd" value="{{ match.home_win_odd }}" class="btn btn-outline-secondary">{{ match.home_win_odd }}</button>
+                                            </form>
+                                            <form method="post" action="{{ url_for('views.place_bet') }}" style="display: flex; flex-direction: column; justify-content: center; margin: 0px 10px;">
+                                                <span>draw</span>
+                                                <input type="hidden" name="winner" value="DRAW">
+                                                <input type="hidden" name="areas" value="{{ areas }}">  <!-- Hidden input to preserve areas -->
+                                                <input type="hidden" name="date" value="{{ date }}">    <!-- Hidden input to preserve date -->
+                                                <input type="hidden" name="match_id" value="{{ match.id }}">
+                                                <button type="submit" name="odd" value="{{ match.draw_odd }}" class="btn btn-outline-secondary">{{ match.draw_odd }}</button>
+                                            </form>
+                                            <form method="post" action="{{ url_for('views.place_bet') }}" style="display: flex; flex-direction: column; justify-content: center; margin: 0px 10px;">
+                                                <span>away</span>
+                                                <input type="hidden" name="winner" value="AWAY_TEAM">
+                                                <input type="hidden" name="areas" value="{{ areas }}">  <!-- Hidden input to preserve areas -->
+                                                <input type="hidden" name="date" value="{{ date }}">    <!-- Hidden input to preserve date -->
+                                                <input type="hidden" name="match_id" value="{{ match.id }}">
+                                                <button type="submit" name="odd" value="{{ match.away_win_odd }}" class="btn btn-outline-secondary">{{ match.away_win_odd }}</button>
+                                            </form>
+                                            
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    {% endfor %}
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-3 mx-1">
+            <h4>Make a Bet</h4>
+            {% for bet in user.bets %}
+                {% if bet.status == 'PENDING' %}
+                    <div class="col p-2" style="border: 1px solid black;">
+                        <form method="post" action="{{ url_for('views.delete_bet', id=bet.id) }}">
+                            <input type="hidden" name="date" value="{{ date }}">
+                            <input type="hidden" name="areas" value="{{ areas }}">
+                            <button type="submit" style="margin-bottom: 10px;">Delete Bet</button>
+                        </form>
+                        <h6>Bet</h6>
+                        {% for bet_match in bet.bet_matches %}
+                            <div class="col my-1" align="center">
+                                <div class="row mt-2" style="border: 1px solid black;">
+                                    <div class="col" align="left">{{ bet_match.home_team }} - {{ bet_match.away_team }} <b>{{ bet_match.odd }}</b></div>
+                                    <div class="col" align="right">
+                                        <form method="post" action="{{ url_for('views.delete_betmatch', id=bet_match.id) }}" style="padding: 10px 0px;">
+                                            <input type="hidden" name="date" value="{{ date }}">
+                                            <input type="hidden" name="areas" value="{{ areas }}">
+                                            <button type="submit">x</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        <div>Odd: {{ bet.odd | round(2) }}</div>
+                        <form method="post" action="{{ url_for('views.place_bet') }}">
+                            <label for="inputAmount">Amount</label>
+                            <input type="number" name="amount" id="amount" class="mt-2" required>
+                            <button type="submit">Submit</button>
+                        </form>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>        
+    </div>
+{% endblock %}

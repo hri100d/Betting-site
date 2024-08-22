@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% block title %}Competition Details{% endblock %}
+
+{% block content %}
+    <div class="m-3">
+        <h1>{{ competition.name }}</h1>
+        <img src="{{ competition.emblem }}" alt="{{ competition.name }} emblem">
+        <p>Type: {{ competition.type }}</p>
+        <p>Area: {{ competition.area.name }} <img src="{{ competition.area.flag }}" alt="{{ competition.area.code }}" style="width: 20px; height: 20px;"></p>
+
+        <div class="row">
+            <div class="col">
+                <!-- Date Selector Form -->
+                <form method="get" action="{{ url_for('views.competition_details', id=competition.id) }}">
+                    <input type="date" name="date" value="{{ date }}" onchange="this.form.submit()">
+                </form>
+
+                <div id="matches">
+                    <h2>Matches</h2>
+                    {% for match in competition.matches %}
+                        {% set match_date = match.utc_date.split('T')[0] %}
+                        {% if match_date == date %}
+                        <a href="{{ url_for('views.match_details', competition_id=competition.id, match_id=match.id) }}" class="match-btn" style="text-decoration: none; color: black;">
+                            <div class="p-2" style="background-color: #d9d5e1;">
+                                <span>{{ match.utc_date }}</span>
+                                <div class="col">
+                                    {% for team in match.teams %}
+                                        <div class="row">
+                                            <img src="{{ team.crest }}" alt="{{ team.tla }}" style="width: 15px; height: 15px;">
+                                            <h6>{{ team.short_name }}</h6>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                {% if match.status == 'FINISHED' %}
+                                    <div class="row">
+                                        <h6 class="m-2 pl-2">Final result:</h6>
+                                        <span class="m-1">{{ match.full_time_home }} - {{ match.full_time_away }}</span>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <br />
+                        </a>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="row" style="border: 1px solid black;">
+                    <h2 class="mx-2">Standings</h2>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Team</th>
+                                <th>MP</th>
+                                <th>W</th>
+                                <th>D</th>
+                                <th>L</th>
+                                <th>GF</th>
+                                <th>GA</th>
+                                <th>GD</th>
+                                <th>Pts</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for entry in standings[0].table %}
+                                <tr>
+                                    <td>
+                                        {{ entry.position }}
+                                        <img src="{{ entry.team.crest }}" alt="{{ entry.team.tla }}" style="width: 30px; height: 30px; margin-right: 10px;">
+                                        {{ entry.team.name }}
+                                    </td>
+                                    <td>{{ entry.playedGames }}</td>
+                                    <td>{{ entry.won }}</td>
+                                    <td>{{ entry.draw }}</td>
+                                    <td>{{ entry.lost }}</td>
+                                    <td>{{ entry.goalsFor }}</td>
+                                    <td>{{ entry.goalsAgainst }}</td>
+                                    <td>{{ entry.goalDifference }}</td>
+                                    <td>{{ entry.points }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="my-3" style="border: 1px solid black;">
+                    <h1 class="mx-2">Top Scorers</h1>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Team Crest</th>
+                                <th>Team Name</th>
+                                <th>Player Name</th>
+                                <th>Nationality</th>
+                                <th>Section</th>
+                                <th>Shirt Number</th>
+                                <th>Played Matches</th>
+                                <th>Goals</th>
+                                <th>Assists</th>
+                                <th>Penalties</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for scorer in scorers %}
+                                <tr>
+                                    <td><img src="{{ scorer.team.crest }}" alt="{{ scorer.team.name }}" style="width: 50px; height: 50px;" onerror="this.onerror=null;this.src='https://via.placeholder.com/50';"></td>
+                                    <td>{{ scorer.team.name or "Unknown" }}</td>
+                                    <td>{{ scorer.player.name or "Unknown" }}</td>
+                                    <td>{{ scorer.player.nationality or "Unknown" }}</td>
+                                    <td>{{ scorer.player.section or "Unknown" }}</td>
+                                    <td>{{ scorer.player.shirtNumber or "Unknown" if scorer.player.shirtNumber is defined else "Unknown" }}</td>
+                                    <td>{{ scorer.playedMatches or "Unknown" }}</td>
+                                    <td>{{ scorer.goals or "Unknown" }}</td>
+                                    <td>{{ scorer.assists or "Unknown" }}</td>
+                                    <td>{{ scorer.penalties or "Unknown" }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

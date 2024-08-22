@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+{% block title %}Match Details{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="col" align="center">
+            <span>{{ match.utc_date }}</span>
+            <div class="row">
+                
+                <!-- Centered Teams Section -->
+                <div class="col d-flex justify-content-center align-items-center m-3">
+                    {% for team in match.teams %}
+                        <a href="{{ url_for('views.team_details', id=team.id) }}" class="team-btn" style="text-decoration: none; color: black; margin: 0 10px;">
+                            <div class="col text-center">
+                                <img src="{{ team.crest }}" alt="{{ team.tla }}" style="width: 30px; height: 30px;">
+                                {{ team.short_name }}
+                            </div>
+                        </a>
+                    {% endfor %}
+                </div>
+                
+                <!-- Existing Content Below -->
+                <div class="col-12 mt-3">
+                    {% if match.status == 'FINISHED' %}
+                        <div class="text-center">
+                            <h4>Match Score</h4>
+                            <p><strong>Full Time:</strong> 
+                                {% if match.full_time_home is not none and match.full_time_away is not none %}
+                                    {{ match.full_time_home }} - {{ match.full_time_away }}
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </p>
+                            <p><strong>Half Time:</strong> 
+                                {% if match.half_time_home is not none and match.half_time_away is not none %}
+                                    {{ match.half_time_home }} - {{ match.half_time_away }}
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </p>
+                        </div>
+                    {% elif match.status == 'PAUSED' %}
+                        <div class="text-center">
+                            <h4>Half Time Score</h4>
+                            <p><strong>Half Time:</strong> 
+                                {% if match.score.halfTime.home is not none and match.score.halfTime.away is not none %}
+                                    {{ match.score.halfTime.home }} - {{ match.score.halfTime.away }}
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </p>
+                        </div>
+                    {% else %}
+                        <p>The match has not yet finished.</p>
+                    {% endif %}
+                </div>
+                <div class="col-12" style="width: 100%; display: flex; justify-content: center;">
+                    <form method="post" action="{{ url_for('views.place_bet_from_match') }}" style="display: flex; flex-direction: column; justify-content: center; margin: 0px 10px;">
+                        <span>home</span>
+                        <input type="hidden" name="winner" value="HOME_TEAM">
+                        <input type="hidden" name="competition_id" value="{{ competition.id }}">
+                        <input type="hidden" name="match_id" value="{{ match.id }}">
+                        <button type="submit" name="odd" value="{{ match.home_win_odd }}" class="{% if match.winner == 'HOME_TEAM' %}btn btn-success{% else %}btn btn-outline-secondary{% endif %}">{{ match.home_win_odd }}</button>
+                    </form>
+                    <form method="post" action="{{ url_for('views.place_bet_from_match') }}" style="display: flex; flex-direction: column; justify-content: center; margin: 0px 10px;">
+                        <span>draw</span>
+                        <input type="hidden" name="winner" value="DRAW">
+                        <input type="hidden" name="competition_id" value="{{ competition.id }}">
+                        <input type="hidden" name="match_id" value="{{ match.id }}">
+                        <button type="submit" name="odd" value="{{ match.draw_odd }}" class="{% if match.winner == 'DRAW' %}btn btn-success{% else %}btn btn-outline-secondary{% endif %}">{{ match.draw_odd }}</button>
+                    </form>
+                    <form method="post" action="{{ url_for('views.place_bet_from_match') }}" style="display: flex; flex-direction: column; justify-content: center; margin: 0px 10px;">
+                        <span>away</span>
+                        <input type="hidden" name="winner" value="AWAY_TEAM">
+                        <input type="hidden" name="competition_id" value="{{ competition.id }}">
+                        <input type="hidden" name="match_id" value="{{ match.id }}">
+                        <button type="submit" name="odd" value="{{ match.away_win_odd }}" class="{% if match.winner == 'AWAY_TEAM' %}btn btn-success{% else %}btn btn-outline-secondary{% endif %}">{{ match.away_win_odd }}</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        {% if match.status == 'FINISHED' %}
+            <p><strong>Score:</strong> {{ match.full_time_home }} - {{ match.full_time_away }}</p>
+        {% endif %}
+        <!-- Aggregates Information -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h2>Aggregates Information</h2>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Home Team</th>
+                        <th>Wins/Losses</th>
+                        <th>Draws</th>
+                        <th>Losses?Wins</th>
+                        <th>Away Team</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ aggregates.homeTeam.name }}</td>
+                        <td>{{ aggregates.homeTeam.wins }}</td>
+                        <td>{{ aggregates.homeTeam.draws }}</td>
+                        <td>{{ aggregates.homeTeam.losses }}</td>
+                        <td>{{ aggregates.awayTeam.name }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            </div>
+        </div>
+
+        <!-- Matches Information -->
+        <div class="row">
+            <div class="col-12">
+                <h2>Last Matches</h2>
+                <div id="matches">
+                    {% for match in matches %}
+                        <div class="border p-2 my-2" style="background-color: #e9ecef;">
+                            <span>{{ match.utcDate }}</span>
+                            <div class="row">
+                                <div class="col">
+                                    <img src="{{ match.homeTeam.crest }}" alt="{{ match.homeTeam.tla }}" style="width: 30px; height: 30px;">
+                                    {{ match.homeTeam.shortName }}
+                                </div>
+                                <div class="col">
+                                    <img src="{{ match.awayTeam.crest }}" alt="{{ match.awayTeam.tla }}" style="width: 30px; height: 30px;">
+                                    {{ match.awayTeam.shortName }}
+                                </div>
+                            </div>
+                            {% if match.status == 'FINISHED' %}
+                                <p><strong>Score:</strong> {{ match.score.fullTime.home }} - {{ match.score.fullTime.away }}</p>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Standings Information -->
+        <div class="row mt-4">
+            <div class="col">
+                <div class="border p-3">
+                    <h2>Standings</h2>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Team</th>
+                                <th>MP</th>
+                                <th>W</th>
+                                <th>D</th>
+                                <th>L</th>
+                                <th>GF</th>
+                                <th>GA</th>
+                                <th>GD</th>
+                                <th>Pts</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for entry in standings[0].table %}
+                                <tr>
+                                    <td>
+                                        {{ entry.position }}
+                                        <img src="{{ entry.team.crest }}" alt="{{ entry.team.tla }}" style="width: 30px; height: 30px; margin-right: 10px;">
+                                        {{ entry.team.name }}
+                                    </td>
+                                    <td>{{ entry.playedGames }}</td>
+                                    <td>{{ entry.won }}</td>
+                                    <td>{{ entry.draw }}</td>
+                                    <td>{{ entry.lost }}</td>
+                                    <td>{{ entry.goalsFor }}</td>
+                                    <td>{{ entry.goalsAgainst }}</td>
+                                    <td>{{ entry.goalDifference }}</td>
+                                    <td>{{ entry.points }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

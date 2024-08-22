@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}Team Details{% endblock %}
+
+{% block content %}
+<div class="container mt-3">
+    <div class="row">
+        <div class="col">
+            <h1>{{ team_data.name }}</h1>
+            <img src="{{ team_data.crest }}" alt="{{ team_data.name }} crest" style="width: 150px; height: 150px;">
+            <p>{{ area.name }} <img src="{{ area.flag }}" alt="{{ area.code }}" style="width: 20px; height: 20px;"></p>
+            <p><strong>Venue:</strong> {{ team_data.venue }}</p>
+        </div>
+        <div class="col">
+            <h3>Running Competitions</h3>
+            <ul>
+                {% for competition in competitions %}
+                    <li>{{ competition.name }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="col">
+            <h3>Coach</h3>
+            <p><strong>Name:</strong> {{ coach.name }}</p>
+            <p><strong>Nationality:</strong> {{ coach.nationality }}</p>
+            <p><strong>Contract:</strong> {{ coach.contract.start }} to {{ coach.contract.until }}</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <h2>Matches</h2>
+            <ul>
+                {% for match in matches %}
+                    <li style="margin: 10px 0px; border: 1px solid black; padding: 5px;">
+                        Date: {{ match.utc_date }} - Status: {{ match.status }}
+                        <br>
+                        {% for team in match.teams %}
+                            <img src="{{ team.crest }}" alt="{{ team.short_name }}" style="width: 20px; height: 20px;">
+                            <span>{{ team.short_name }}</span>
+                        {% endfor %}
+                        <br>
+                        <strong>Score: </strong>{{ match.full_time_home }} - {{ match.full_time_away }}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="col">
+            <h3>Squad</h3>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Position</th>
+                        <th>Nationality</th>
+                        <th>Age</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for player in squad %}
+                        <tr>
+                            <td>{{ player.name }}</td>
+                            <td>{{ player.position }}</td>
+                            <td>{{ player.nationality }}</td>
+                            <td>{{ player.dateOfBirth | calculate_age }}</td> <!-- Use custom filter -->
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
