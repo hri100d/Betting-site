@@ -1,3 +1,6 @@
+"""
+Create SQLAlchemy database models
+"""
 from flask_login import UserMixin
 from sqlalchemy import func
 from .setup_db import db
@@ -20,13 +23,14 @@ class User(db.Model, UserMixin):
 
     bets = db.relationship('Bet', backref='user')
     transactions = db.relationship('Transaction', backref='user')
+    user_numbers = db.relationship('UserNumbers', backref='user', cascade='all, delete-orphan') 
 
 class Transaction(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     amount = db.Column(db.Float, nullable=False)
     type = db.Column(db.String(10), nullable=False) 
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    
     def __init__(self, amount, type, user_id):
         self.amount = amount
         self.type = type
@@ -63,26 +67,7 @@ class Match(db.Model):
 
     competition_id = db.Column(db.Integer, db.ForeignKey('competition.id'))
     teams = db.relationship('Team', secondary=match_team, backref='matches')
-    players = db.relationship('Player', backref='match')
     bet_match = db.relationship('BetMatch', backref='match', uselist=False)
-
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'utc_date': self.utc_date,
-            'status': self.status,
-            'stage': self.stage,
-            'group': self.group,
-            'winner': self.winner,
-            'duration': self.duration,
-            'full_time_home': self.full_time_home,
-            'full_time_away': self.full_time_away,
-            'half_time_home': self.half_time_home,
-            'half_time_away': self.half_time_away,
-            'home_win_odd': self.home_win_odd,
-            'away_win_odd': self.away_win_odd,
-            'draw_odd': self.draw_odd,
-        }
 
 class BetMatch(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -118,15 +103,6 @@ class Competition(db.Model):
     matches = db.relationship('Match', backref='competition')
     teams = db.relationship('Team', secondary=competition_team, backref='competitions')
 
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'name': self.name,
-            'code': self.code,
-            'type': self.type,
-            'emblem': self.emblem,
-        }
-
 class Team(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
@@ -134,31 +110,6 @@ class Team(db.Model):
     tla = db.Column(db.String(10))
     crest = db.Column(db.String(255))
 
-    players = db.relationship('Player', backref='team')
-
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'name': self.name,
-            'short_name': self.short_name,
-            'tla': self.tla,
-            'crest': self.crest,
-        }
-
-class Player(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    position = db.Column(db.String(50))
-    shirt_number = db.Column(db.Integer)
-
-    team_id = db.Column(db.Integer, db.ForeignKey('team.id'))
-    match_id = db.Column(db.Integer, db.ForeignKey('match.id'))
-
-class Coach(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    dateOfBirth = db.Column(db.String(50))
-    nationality = db.Column(db.String(16))
 
 class LotteryNumbers(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -166,6 +117,18 @@ class LotteryNumbers(db.Model):
 
     def __init__(self, numbers):
         self.numbers = ','.join(map(str, numbers))
+
+    def get_numbers(self):
+        return list(map(int, self.numbers.split(',')))
+    
+class UserNumbers(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    numbers = db.Column(db.String, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  
+
+    def __init__(self, numbers, user_id):
+        self.numbers = ','.join(map(str, numbers))
+        self.user_id = user_id
 
     def get_numbers(self):
         return list(map(int, self.numbers.split(',')))

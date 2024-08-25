@@ -1,3 +1,6 @@
+"""
+Set up the flask web application and database
+"""
 from datetime import datetime
 import os
 from flask import Flask
@@ -7,6 +10,8 @@ from website.setup_scheduler import init_scheduler
 from .setup_db import init_database, create_database
 from .views import views
 from .auth import auth
+from .bets import bets
+from .transactions import transactions
 from . import models
 
 load_dotenv()
@@ -20,6 +25,8 @@ def create_app() -> Flask:
 
     app.register_blueprint(views, url_prefix='/')
     app.register_blueprint(auth, url_prefix='/')
+    app.register_blueprint(bets, ulr_prefix='/bets')
+    app.register_blueprint(transactions, ulr_prefix='/transactions')
     
     create_database(app)
 

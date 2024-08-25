@@ -53,21 +53,21 @@
                     {% endif %}
                 </div>
                 <div class="col-12" style="width: 100%; display: flex; justify-content: center;">
-                    <form method="post" action="{{ url_for('views.place_bet_from_match') }}" style="display: flex; flex-direction: column; justify-content: center; margin: 0px 10px;">
+                    <form method="post" action="{{ url_for('bets.place_bet_from_match') }}" style="display: flex; flex-direction: column; justify-content: center; margin: 0px 10px;">
                         <span>home</span>
                         <input type="hidden" name="winner" value="HOME_TEAM">
                         <input type="hidden" name="competition_id" value="{{ competition.id }}">
                         <input type="hidden" name="match_id" value="{{ match.id }}">
                         <button type="submit" name="odd" value="{{ match.home_win_odd }}" class="{% if match.winner == 'HOME_TEAM' %}btn btn-success{% else %}btn btn-outline-secondary{% endif %}">{{ match.home_win_odd }}</button>
                     </form>
-                    <form method="post" action="{{ url_for('views.place_bet_from_match') }}" style="display: flex; flex-direction: column; justify-content: center; margin: 0px 10px;">
+                    <form method="post" action="{{ url_for('bets.place_bet_from_match') }}" style="display: flex; flex-direction: column; justify-content: center; margin: 0px 10px;">
                         <span>draw</span>
                         <input type="hidden" name="winner" value="DRAW">
                         <input type="hidden" name="competition_id" value="{{ competition.id }}">
                         <input type="hidden" name="match_id" value="{{ match.id }}">
                         <button type="submit" name="odd" value="{{ match.draw_odd }}" class="{% if match.winner == 'DRAW' %}btn btn-success{% else %}btn btn-outline-secondary{% endif %}">{{ match.draw_odd }}</button>
                     </form>
-                    <form method="post" action="{{ url_for('views.place_bet_from_match') }}" style="display: flex; flex-direction: column; justify-content: center; margin: 0px 10px;">
+                    <form method="post" action="{{ url_for('bets.place_bet_from_match') }}" style="display: flex; flex-direction: column; justify-content: center; margin: 0px 10px;">
                         <span>away</span>
                         <input type="hidden" name="winner" value="AWAY_TEAM">
                         <input type="hidden" name="competition_id" value="{{ competition.id }}">

@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Lottery{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Enter Enter Lottery Numbers from 1 to 35 (must be unique)</h1>
+    <form method="POST" action="{{ url_for('views.lottery') }}">
+        <div class="form-group">
+            <label for="number1">Number 1:</label>
+            <input type="number" class="form-control" id="number1" name="number1" min="1" max="35" required>
+        </div>
+        <div class="form-group">
+            <label for="number2">Number 2:</label>
+            <input type="number" class="form-control" id="number2" name="number2" min="1" max="35" required>
+        </div>
+        <div class="form-group">
+            <label for="number3">Number 3:</label>
+            <input type="number" class="form-control" id="number3" name="number3" min="1" max="35" required>
+        </div>
+        <div class="form-group">
+            <label for="number4">Number 4:</label>
+            <input type="number" class="form-control" id="number4" name="number4" min="1" max="35" required>
+        </div>
+        <div class="form-group">
+            <label for="number5">Number 5:</label>
+            <input type="number" class="form-control" id="number5" name="number5" min="1" max="35" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit Numbers</button>
+    </form>
+
+    <hr>
+
+    <h2>Winners from Last Drawing</h2>
+    <ul>
+        {% if winners %}
+            {% for winner in winners %}
+                <li>{{ winner.email }} - Guessed Numbers: {{ winner.numbers }}</li>
+            {% endfor %}
+        {% else %}
+            <li>No winners in the last drawing.</li>
+        {% endif %}
+    </ul>
+
+    <hr>
+
+    <h2>Previous Drawn Numbers</h2>
+    <ul>
+        {% for lottery in previous_lotteries %}
+            <li>{{ lottery.numbers }}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

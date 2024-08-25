@@ -51,19 +51,19 @@
                                         {% if match.status == 'FINISHED' %}
                                             <span>{{ match.full_time_home }} - {{ match.full_time_away }}</span>
                                             <div class="row" style="display: flex; justify-content: center;">
-                                                <form method="post" action="{{ url_for('views.place_bet') }}" style="display: flex; flex-direction: column; justify-content: center; margin: 0px 10px;">
+                                                <form method="post" action="{{ url_for('bets.place_bet') }}" style="display: flex; flex-direction: column; justify-content: center; margin: 0px 10px;">
                                                     <span>home</span>
                                                     <input type="hidden" name="winner" value="HOME">
                                                     <input type="hidden" name="match_id" value="{{ match.id }}">
                                                     <button type="submit" name="odd" value="{{ match.home_win_odd }}" class="{% if match.winner == 'HOME_TEAM' %}btn btn-success{% else %}btn btn-outline-secondary{% endif %}" disabled>{{ match.home_win_odd }}</button>
                                                 </form>
-                                                <form method="post" action="{{ url_for('views.place_bet') }}" style="display: flex; flex-direction: column; justify-content: center; margin: 0px 10px;">
+                                                <form method="post" action="{{ url_for('bets.place_bet') }}" style="display: flex; flex-direction: column; justify-content: center; margin: 0px 10px;">
                                                     <span>draw</span>
                                                     <input type="hidden" name="winner" value="DRAW">
                                                     <input type="hidden" name="match_id" value="{{ match.id }}">
                                                     <button type="submit" name="odd" value="{{ match.draw_odd }}" class="{% if match.winner == 'DRAW' %}btn btn-success{% else %}btn btn-outline-secondary{% endif %}" disabled>{{ match.draw_odd }}</button>
                                                 </form>
-                                                <form method="post" action="{{ url_for('views.place_bet') }}" style="display: flex; flex-direction: column; justify-content: center; margin: 0px 10px;">
+                                                <form method="post" action="{{ url_for('bets.place_bet') }}" style="display: flex; flex-direction: column; justify-content: center; margin: 0px 10px;">
                                                     <span>away</span>
                                                     <input type="hidden" name="winner" value="AWAY">
                                                     <input type="hidden" name="match_id" value="{{ match.id }}">
@@ -72,7 +72,7 @@
                                             </div>
                                         {% else %}
                                         <div class="row" style="display: flex; justify-content: center;">
-                                            <form method="post" action="{{ url_for('views.place_bet') }}" style="display: flex; flex-direction: column; justify-content: center; margin: 0px 10px;">
+                                            <form method="post" action="{{ url_for('bets.place_bet') }}" style="display: flex; flex-direction: column; justify-content: center; margin: 0px 10px;">
                                                 <span>home</span>
                                                 <input type="hidden" name="winner" value="HOME_TEAM">
                                                 <input type="hidden" name="areas" value="{{ areas }}">  
@@ -80,7 +80,7 @@
                                                 <input type="hidden" name="match_id" value="{{ match.id }}">
                                                 <button type="submit" name="odd" value="{{ match.home_win_odd }}" class="btn btn-outline-secondary">{{ match.home_win_odd }}</button>
                                             </form>
-                                            <form method="post" action="{{ url_for('views.place_bet') }}" style="display: flex; flex-direction: column; justify-content: center; margin: 0px 10px;">
+                                            <form method="post" action="{{ url_for('bets.place_bet') }}" style="display: flex; flex-direction: column; justify-content: center; margin: 0px 10px;">
                                                 <span>draw</span>
                                                 <input type="hidden" name="winner" value="DRAW">
                                                 <input type="hidden" name="areas" value="{{ areas }}"> 
@@ -88,7 +88,7 @@
                                                 <input type="hidden" name="match_id" value="{{ match.id }}">
                                                 <button type="submit" name="odd" value="{{ match.draw_odd }}" class="btn btn-outline-secondary">{{ match.draw_odd }}</button>
                                             </form>
-                                            <form method="post" action="{{ url_for('views.place_bet') }}" style="display: flex; flex-direction: column; justify-content: center; margin: 0px 10px;">
+                                            <form method="post" action="{{ url_for('bets.place_bet') }}" style="display: flex; flex-direction: column; justify-content: center; margin: 0px 10px;">
                                                 <span>away</span>
                                                 <input type="hidden" name="winner" value="AWAY_TEAM">
                                                 <input type="hidden" name="areas" value="{{ areas }}">  
@@ -113,7 +113,7 @@
             {% for bet in user.bets %}
                 {% if bet.status == 'PENDING' %}
                     <div class="col p-2" style="border: 1px solid black;">
-                        <form method="post" action="{{ url_for('views.delete_bet', id=bet.id) }}">
+                        <form method="post" action="{{ url_for('bets.delete_bet', id=bet.id) }}">
                             <input type="hidden" name="date" value="{{ date }}">
                             <input type="hidden" name="areas" value="{{ areas }}">
                             <button type="submit" style="margin-bottom: 10px;">Delete Bet</button>
@@ -124,7 +124,7 @@
                                 <div class="row mt-2" style="border: 1px solid black;">
                                     <div class="col" align="left">{{ bet_match.home_team }} - {{ bet_match.away_team }} <b>{{ bet_match.odd }}</b></div>
                                     <div class="col" align="right">
-                                        <form method="post" action="{{ url_for('views.delete_betmatch', id=bet_match.id) }}" style="padding: 10px 0px;">
+                                        <form method="post" action="{{ url_for('bets.delete_betmatch', id=bet_match.id) }}" style="padding: 10px 0px;">
                                             <input type="hidden" name="date" value="{{ date }}">
                                             <input type="hidden" name="areas" value="{{ areas }}">
                                             <button type="submit">x</button>
@@ -134,7 +134,7 @@
                             </div>
                         {% endfor %}
                         <div>Odd: {{ bet.odd | round(2) }}</div>
-                        <form method="post" action="{{ url_for('views.place_bet') }}">
+                        <form method="post" action="{{ url_for('bets.place_bet') }}">
                             <label for="inputAmount">Amount</label>
                             <input type="number" name="amount" id="amount" class="mt-2" required>
                             <button type="submit">Submit</button>

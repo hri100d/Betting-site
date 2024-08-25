@@ -1,8 +1,9 @@
+"""
+Implements the integration with the FD API
+"""
 from datetime import datetime
-import json
 import dotenv
 import os
-from flask import jsonify
 import requests
 
 from typing import Dict, List, Optional
@@ -37,6 +38,16 @@ def fetch_football_data(endpoint: str) -> dict:
         raise ValueError(f"Bad response - status code: {response.status_code}")
     
     return response.json()
+
+def update_or_create_team(
+    team: Team, 
+    team_data: dict
+) -> None:
+    team.name = team_data.get('name')
+    team.short_name = team_data.get('shortName')
+    team.tla = team_data.get('tla')
+    team.crest = team_data.get('crest')
+
 
 def create_match_models(motches_data: list[dict]) -> list[Match]:
     return [Match(id=match["id"],
@@ -97,6 +108,28 @@ def create_match_model(match_data: dict) -> Match:
         half_time_away=match_data.get("half_time_away")
     )
     return match
+
+def update_match_details(
+    match: Match, 
+    match_data: dict, 
+    competition_id: int, 
+    odds: list[float]
+) -> None:
+    match.utc_date = match_data['utcDate']
+    match.status = match_data['status']
+    match.stage = match_data['stage']
+    match.group = match_data.get('group')
+    match.winner = match_data['score']['winner']
+    match.duration = match_data['score']['duration']
+    match.full_time_home = match_data['score']['fullTime']['home']
+    match.full_time_away = match_data['score']['fullTime']['away']
+    match.half_time_home = match_data['score']['halfTime']['home']
+    match.half_time_away = match_data['score']['halfTime']['away']
+    match.competition_id = competition_id
+    match.home_win_odd = odds[0]
+    match.away_win_odd = odds[2]
+    match.draw_odd = odds[1]
+
 
 
 def get_match_head2head_by_id(match_id: int) -> Match:
